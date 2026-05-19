@@ -61,6 +61,7 @@ from .psoft import PsoftConfig, PsoftModel
 from .pvera import PveraConfig, PveraModel
 from .randlora import RandLoraConfig, RandLoraModel
 from .road import RoadConfig, RoadModel
+from .rosa import RosaConfig, RosaModel, RosaScheduler
 from .shira import ShiraConfig, ShiraModel
 from .tinylora import TinyLoraConfig, TinyLoraModel
 from .trainable_tokens import TrainableTokensConfig, TrainableTokensModel
@@ -145,6 +146,9 @@ __all__ = [
     "RandLoraModel",
     "RoadConfig",
     "RoadModel",
+    "RosaConfig",
+    "RosaModel",
+    "RosaScheduler",
     "ShiraConfig",
     "ShiraModel",
     "TinyLoraConfig",

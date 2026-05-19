@@ -54,6 +54,7 @@ from peft import (
     PsoftConfig,
     PveraConfig,
     RoadConfig,
+    RosaConfig,
     ShiraConfig,
     TaskType,
     TinyLoraConfig,
@@ -284,6 +285,16 @@ ALL_CONFIGS = [
             "task_type": "CAUSAL_LM",
             "variant": "road_1",
             "group_size": 2,
+        },
+    ),
+    (
+        RosaConfig,
+        {
+            "task_type": "CAUSAL_LM",
+            "r": 8,
+            "d": 0.0,
+            "schedule": "lora_only",
+            "lora_alpha": 8,
         },
     ),
     (

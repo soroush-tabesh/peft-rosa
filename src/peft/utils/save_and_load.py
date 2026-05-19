@@ -171,6 +171,24 @@ def get_peft_model_state_dict(
 
             to_return = {renamed_dora_weights(k): v for k, v in to_return.items()}
 
+    elif config.peft_type == PeftType.ROSA:
+        bias = config.bias
+        if bias == "none":
+            to_return = {k: state_dict[k] for k in state_dict if "rosa_" in k}
+        elif bias == "all":
+            to_return = {k: state_dict[k] for k in state_dict if "rosa_" in k or "bias" in k}
+        elif bias == "rosa_only":
+            to_return = {}
+            for k in state_dict:
+                if "rosa_" in k:
+                    to_return[k] = state_dict[k]
+                    bias_name = k.split("rosa_")[0] + "bias"
+                    if bias_name in state_dict:
+                        to_return[bias_name] = state_dict[bias_name]
+        else:
+            raise NotImplementedError
+        to_return = {k: v for k, v in to_return.items() if (("rosa_" in k and adapter_name in k) or ("bias" in k))}
+
     elif config.peft_type == PeftType.BOFT:
         bias = config.bias
         if bias == "none":

@@ -38,6 +38,19 @@ def is_bnb_available() -> bool:
 
 
 @lru_cache
+def is_spops_available() -> bool:
+    return importlib.util.find_spec("spops") is not None
+
+
+def require_spops(feature: str = "RoSA sparse adapters") -> None:
+    if not is_spops_available():
+        raise ImportError(
+            f"{feature} require the `spops` package (https://github.com/IST-DASLab/spops). "
+            "Install spops built for your CUDA toolkit, or use d=0 for LoRA-only mode."
+        )
+
+
+@lru_cache
 def is_bnb_4bit_available() -> bool:
     if not is_bnb_available():
         return False

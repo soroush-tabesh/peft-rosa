@@ -55,6 +55,7 @@ from peft import (
     PromptTuningConfig,
     PsoftConfig,
     RoadConfig,
+    RosaConfig,
     VBLoRAConfig,
     VeloraConfig,
     VeraConfig,
@@ -2159,6 +2160,31 @@ class TestRoadInitialization:
         msg = "Target module Conv2d(100, 100, kernel_size=(3, 3), stride=(1, 1)) is not supported. Currently, only the following modules are supported: `torch.nn.Linear`."
         with pytest.raises(ValueError, match=re.escape(msg)):
             get_peft_model(model, config)
+
+
+class TestRosaInitialization:
+    torch_device = infer_device()
+
+    def get_model(self):
+        class MLP(nn.Module):
+            def __init__(self, bias=True):
+                super().__init__()
+                self.lin0 = nn.Linear(10, 30, bias=bias)
+                self.lin1 = nn.Linear(30, 2, bias=bias)
+
+            def forward(self, X):
+                X = self.lin0(X)
+                X = self.lin1(X)
+                return X
+
+        return MLP().to(self.torch_device)
+
+    def test_rosa_lora_only_initialization(self):
+        model = self.get_model()
+        config = RosaConfig(target_modules=["lin0"], r=4, d=0.0, schedule="lora_only", lora_alpha=4)
+        model = get_peft_model(model, config)
+        assert hasattr(model.lin0, "rosa_A")
+        assert model.lin0.rosa_A["default"].weight.shape == (4, 10)
 
 
 class TestDeLoRAInitialization:

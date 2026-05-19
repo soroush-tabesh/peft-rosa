@@ -92,6 +92,7 @@ class PeftType(str, enum.Enum):
     TINYLORA = "TINYLORA"
     PSOFT = "PSOFT"
     PEANUT = "PEANUT"
+    ROSA = "ROSA"
 
 
 class TaskType(str, enum.Enum):

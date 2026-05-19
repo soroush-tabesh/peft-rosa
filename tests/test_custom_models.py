@@ -56,6 +56,7 @@ from peft import (
     PveraConfig,
     RandLoraConfig,
     RoadConfig,
+    RosaConfig,
     ShiraConfig,
     TaskType,
     TinyLoraConfig,
@@ -855,6 +856,15 @@ TEST_CASES = [
         "MLP",
         RandLoraConfig,
         {"target_modules": ["lin0"], "modules_to_save": ["lin1"], "randlora_alpha": 1},
+    ),
+    ########
+    # RoSA #
+    ########
+    (
+        "Vanilla MLP 1 RoSA",
+        "MLP",
+        RosaConfig,
+        {"target_modules": ["lin0"], "r": 4, "d": 0.0, "schedule": "lora_only", "lora_alpha": 4},
     ),
     #######
     # C3A #
