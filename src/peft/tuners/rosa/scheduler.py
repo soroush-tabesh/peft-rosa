@@ -19,7 +19,6 @@ import logging
 from typing import Any
 
 import torch
-from transformers import TrainerCallback
 
 from .hooks import ManualGradCollectorHook, SaveInputHook
 from .layer import RosaLayer
@@ -28,11 +27,17 @@ from .model import RosaModel
 logger = logging.getLogger(__name__)
 
 
-class RosaScheduler(TrainerCallback):
-    """RoSA training schedule: LoRA warmup, gradient collection, and sparse mask activation."""
+class RosaScheduler:
+    """RoSA training schedule: LoRA warmup, gradient collection, and sparse mask activation.
+
+    Duck-typed for `transformers.TrainerCallback`. We intentionally do not subclass
+    `TrainerCallback` to avoid a circular import: importing ``transformers`` here triggers
+    ``transformers.trainer_utils`` which does ``from peft import PeftMixedModel, PeftModel``
+    while ``peft`` is still initializing. HF's ``CallbackHandler`` only invokes the
+    ``on_*`` hooks by name, so duck typing is sufficient.
+    """
 
     def __init__(self, model: RosaModel) -> None:
-        super().__init__()
         self._model = model
 
         config = model.peft_config
